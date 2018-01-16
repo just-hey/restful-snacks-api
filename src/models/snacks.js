@@ -11,17 +11,35 @@ const getOne = (id) => {
 }
 
 const create = (name, qty, imported) => {
-  let newSnack = { id: uuid(), name, qty, imported}
-  snacks.push(newSnack)
-  return newSnack
+  const exists = snacks.find(snack => snack.name === name)
+  if(!exists) {
+    let newSnack = { id: uuid(), name, qty, imported}
+    snacks.push(newSnack)
+    return newSnack
+  }
+  return { status: 400, message: 'Name already in use.' }
 }
 
-const update = () => {
-
+const update = (id, body) => {
+  let exists = snacks.find(snack => snack.id === id)
+  if (exists) {
+    exists.name = body.name || exists.name
+    exists.qty = body.qty || exists.qty
+    if(body.imported !== undefined) {
+      let newImported = body.imported
+      exists.imported = newImported
+    }
+    return exists
+  }
+  return { status: 404, message: `Snack with ID: ${id} not found.`}
 }
 
-const destroy = () => {
-
+const destroy = (id) => {
+  const exists = snacks.find(snack => snack.id === id)
+  if(!exists) return { status: 404, message: `Snack with ID: ${id} not found.` }
+  let index = snacks.indexOf(exists)
+  snacks.splice(index, 1)
+  return exists
 }
 
 module.exports = { getAll, getOne, create, update, destroy }
