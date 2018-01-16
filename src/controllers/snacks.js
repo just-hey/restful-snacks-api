@@ -27,7 +27,6 @@ const update = (req, res, next) => {
 }
 
 const destroy = (req, res, next) => {
-  console.log('ctrl');
   const response = model.destroy(req.params.id)
   if (response.status) next( {response} )
   res.status(200).json({ response })
